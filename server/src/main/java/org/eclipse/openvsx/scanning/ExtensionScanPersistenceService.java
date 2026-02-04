@@ -207,7 +207,8 @@ public class ExtensionScanPersistenceService {
             int findingsCount,
             @Nullable String summary,
             @Nullable String errorMessage,
-            @Nullable Long scannerJobId
+            @Nullable Long scannerJobId,
+            @Nullable Boolean required
     ) {
         var checkResult = new ScanCheckResult();
         checkResult.setScan(scan);
@@ -222,12 +223,13 @@ public class ExtensionScanPersistenceService {
         checkResult.setSummary(summary);
         checkResult.setErrorMessage(errorMessage);
         checkResult.setScannerJobId(scannerJobId);
+        checkResult.setRequired(required);
         
         repositories.saveScanCheckResult(checkResult);
         
-        logger.debug("Recorded check result: {}.{} {} (scan={}) type={}, result={}, duration={}ms",
+        logger.debug("Recorded check result: {}.{} {} (scan={}) type={}, result={}, duration={}ms, required={}",
             scan.getNamespaceName(), scan.getExtensionName(), scan.getExtensionVersion(),
-            scan.getId(), checkType, result, checkResult.getDurationMs());
+            scan.getId(), checkType, result, checkResult.getDurationMs(), required);
     }
 
     /**
@@ -262,7 +264,8 @@ public class ExtensionScanPersistenceService {
             findingsCount,
             summary,
             errorMessage,
-            job.getId()
+            job.getId(),
+            null  // Scanner jobs don't have the "required" concept
         );
     }
 
